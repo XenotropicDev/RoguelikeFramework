@@ -45,10 +45,8 @@ namespace RogueFramework
                         return;
                     case ConsoleKey.F8:
                         break;
-                    case ConsoleKey.F7:                        
-                        CreateBSPRooms();
-                        ConnectRooms();
-                        //ConnectAllRooms();
+                    case ConsoleKey.F7:
+                        RoomTest();
                         PopulateTiles();
                         PopulateWalls();
                         //CutOutRooms();                        
@@ -72,15 +70,25 @@ namespace RogueFramework
             LevelTiles = new List<Base.ITile>();
             LevelWalls = new List<Base.IWall>();
             rooms = new List<Rooms.RoomLocation>();
+
             PopulateTiles();
             PopulateWalls();
             //CutOutRooms();
             CreateBSPRooms();
-            ConnectRooms();
-            CutoutForBSP();            
+            //root.CreateHalls();
+            CutoutForBSP();
             DrawLevel();
             DrawCreature(PC);
             Console.CursorVisible = false;
+
+            //RoomTest();
+            //PopulateTiles();
+            //PopulateWalls();
+            ////CutOutRooms();                        
+            //CutoutForBSP();
+            //DrawLevel();
+            //DrawCreature(PC);
+            //Console.CursorVisible = false;
         }
 
         public void ConnectAllRooms()
@@ -168,10 +176,10 @@ namespace RogueFramework
 
         public void CreateBSPRooms()
         {
-            const int MAX_LEAF_SIZE = 24;
-
+            const int MAX_CELL_SIZE = 24;
+             
             mapCells = new List<Cell>();
-            root = new Cell(2, 2, Console.WindowWidth - 2, Console.WindowHeight - 2, rand);
+            root = new Cell(5, 5, Console.WindowWidth - 5, Console.WindowHeight - 5, rand);
             mapCells.Add(root);
 
             bool didSplit = true;
@@ -180,16 +188,16 @@ namespace RogueFramework
             {
                 didSplit = false;
                 for (int i = 0; i < mapCells.Count; i++)
-                    ////for (int i = leafs.Count - 1; i >= 0; i--)                
+                    ////for (int i = cells.Count - 1; i >= 0; i--)                
                 {
-                    if (mapCells[i].LeftChild == null && mapCells[i].RightChild == null) // if this Leaf is not already split...
+                    if (mapCells[i].LeftChild == null && mapCells[i].RightChild == null) // if this cell is not already split...
                     {
-                        // if this Leaf is too big, or 75% chance...
-                        if (mapCells[i].Width > MAX_LEAF_SIZE || mapCells[i].Height > MAX_LEAF_SIZE || rand.NextDouble() > 0.25)
+                        // if this cell is too big, or 75% chance...
+                        if (mapCells[i].Width > MAX_CELL_SIZE || mapCells[i].Height > MAX_CELL_SIZE || rand.NextDouble() > 0.25)
                         {
-                            if (mapCells[i].Split()) // split the Leaf!
+                            if (mapCells[i].Split()) // split the cell!
                             {
-                                // if we did split, push the child leafs to the Vector so we can loop into them next
+                                // if we did split, push the child cells to the Vector so we can loop into them next
                                 mapCells.Add(mapCells[i].LeftChild);
                                 mapCells.Add(mapCells[i].RightChild);
                                 didSplit = true;
@@ -204,28 +212,19 @@ namespace RogueFramework
 
         private void CutoutForBSP()
         {
-            foreach (Cell l in mapCells)
+            foreach (Cell cell in mapCells)
             {
-                if (l.GetRoom().HasValue)
+                if (cell.GetRoom().HasValue)
                 {
-                    LevelWalls.RemoveAll(w => w.XPos >= l.GetRoom().Value.Left && w.XPos <= l.GetRoom().Value.Right && w.YPos >= l.GetRoom().Value.Top && w.YPos <= l.GetRoom().Value.Bottom);
+                    LevelWalls.RemoveAll(w => w.XPos >= cell.GetRoom().Value.Left && w.XPos <= cell.GetRoom().Value.Right && w.YPos >= cell.GetRoom().Value.Top && w.YPos <= cell.GetRoom().Value.Bottom);
                 }
-                foreach (Rectangle hall in l.halls)
+                foreach (Rectangle hall in cell.halls)
                 {
                     LevelWalls.RemoveAll(w => w.XPos >= hall.Left && w.XPos <= hall.Right && w.YPos >= hall.Top && w.YPos <= hall.Bottom);
                 }
             }
         }
         
-
-        private void ConnectRooms()
-        {
-            var room = root.GetRoom();
-            foreach (Cell c in mapCells)
-            {
-
-            }
-        }
 
 
 
@@ -286,6 +285,35 @@ namespace RogueFramework
         {
             var tile = LevelTiles.Find(t => t.XPos == creature.XPos && t.YPos == creature.YPos);
             return tile; //?? new Tiles.Stone(creature.XPos, creature.YPos);
+        }
+
+        public void RoomTest()
+        {
+            Rectangle r1 = new Rectangle(2, 2, 12, 6);
+            Rectangle r2 = new Rectangle(30, 2, 12, 6);
+            Rectangle r3 = new Rectangle(100, 2, 12, 6);
+
+            Cell c1 = new Cell(0, 0, 25, 25, rand);
+            Cell c2 = new Cell(25, 25, 25, 25, rand);
+            Cell main = new Cell(0, 0, 100, 100, rand);
+            Cell extra = new Cell(100, 0, 100, 100, rand);
+
+            mapCells = new List<Cell>();
+
+            c1.Room = r1;
+            c2.Room = r2;
+            extra.Room = r3;
+
+            main.LeftChild = c1;
+            main.RightChild = c2;
+
+            mapCells.Add(main);
+            mapCells.Add(c1);
+            mapCells.Add(c2);
+            mapCells.Add(extra);
+
+            main.ConnectRooms(main.LeftChild.Room.Value, main.RightChild.Room.Value);
+            main.ConnectRooms(main.GetRoom().Value, extra.Room.Value);
         }
     }
 }
