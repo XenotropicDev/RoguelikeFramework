@@ -18,6 +18,18 @@ namespace RogueFramework.Creatures
         public int XPos { get; set; }
         public int YPos { get; set; }
 
+        public List<IEffect> ActiveEffects { get; set; }
+
+        public double Strength { get; set; }
+        public double Agility { get; set; }
+        public double Consitution { get; set; }
+        public double Inteligence { get; set; }
+        public double Wisdom { get; set; }
+        public double Charimsa { get; set; }
+        public double MoveSpeed { get; set; }
+        public double AttackSpeed { get; set; }
+        public double HitDie { get; set; }
+
         public SampleCharacter()
         {
             Name = "Sample";

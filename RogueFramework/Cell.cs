@@ -7,7 +7,7 @@ namespace RogueFramework
 {
     public class Cell
     {
-        private const int MIN_CELL_SIZE = 12;
+        private const int MIN_CELL_SIZE = 8;
 
         private Random rand;
 
@@ -88,7 +88,7 @@ namespace RogueFramework
                 // Check if there's rooms on both sides, and connect those specific rooms
                 var room1 = LeftChild.GetRoom();
                 var room2 = RightChild.GetRoom();
-                if (room1 != null && room2 != null)
+                if (room1 != null && room2 != null && this.halls.Count == 0)
                 {
                     this.ConnectRooms(room1.Value, room2.Value);
                 }
@@ -106,29 +106,29 @@ namespace RogueFramework
 	        }
         }
 
-        public void CreateHalls()
-        {
-            // this function generates all the rooms and hallways for this cell and all of its children.
-            if (LeftChild != null || RightChild != null)
-            {
-                // this cell has been split, so go into the children cells
-                if (LeftChild != null)
-                {
-                    LeftChild.CreateHalls();
-                }
-                if (RightChild != null)
-                {
-                    RightChild.CreateHalls();
-                }
-            }           
+        //public void CreateHalls()
+        //{
+        //    // this function generates all the rooms and hallways for this cell and all of its children.
+        //    if (LeftChild != null || RightChild != null)
+        //    {
+        //        // this cell has been split, so go into the children cells
+        //        if (LeftChild != null)
+        //        {
+        //            LeftChild.CreateHalls();
+        //        }
+        //        if (RightChild != null)
+        //        {
+        //            RightChild.CreateHalls();
+        //        }
+        //    }           
 
-            // if there are both left and right children in this cell, create a hallway between them
-            if (LeftChild != null && RightChild != null && LeftChild.GetRoom().HasValue && RightChild.GetRoom().HasValue)
-            {                
-                this.ConnectRooms(LeftChild.GetRoom().Value, RightChild.GetRoom().Value);
-            }
+        //    // if there are both left and right children in this cell, create a hallway between them
+        //    if (LeftChild != null && RightChild != null && LeftChild.GetRoom().HasValue && RightChild.GetRoom().HasValue)
+        //    {                
+        //        this.ConnectRooms(LeftChild.GetRoom().Value, RightChild.GetRoom().Value);
+        //    }
 
-        }
+        //}
 
         public Rectangle? GetRoom()
         {

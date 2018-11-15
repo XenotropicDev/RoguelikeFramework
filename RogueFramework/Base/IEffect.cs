@@ -7,5 +7,7 @@ namespace RogueFramework.Base
     public interface IEffect
     {
         string Name { get; set; }
+
+        Base.AttributeMod AttributeMod { get; set; }
     }
 }

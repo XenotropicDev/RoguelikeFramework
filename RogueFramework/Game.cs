@@ -91,23 +91,6 @@ namespace RogueFramework
             //Console.CursorVisible = false;
         }
 
-        public void ConnectAllRooms()
-        {
-            foreach (var cell1 in this.mapCells)
-            {
-                var room1 = cell1.GetRoom();
-                foreach (var cell2 in this.mapCells)
-                {
-                    var room2 = cell2.GetRoom();
-                    if (room1 == room2)
-                    {
-                        continue;
-                    }
-                    cell1.ConnectRooms(room1.Value, room2.Value);
-                }
-            }
-        }
-
         public void PopulateTiles()
         {
             Random rand = new Random();
@@ -176,10 +159,10 @@ namespace RogueFramework
 
         public void CreateBSPRooms()
         {
-            const int MAX_CELL_SIZE = 24;
+            const int MAX_CELL_SIZE = 16;
              
             mapCells = new List<Cell>();
-            root = new Cell(5, 5, Console.WindowWidth - 5, Console.WindowHeight - 5, rand);
+            root = new Cell(2, 2, Console.WindowWidth - 2, Console.WindowHeight - 2, rand);
             mapCells.Add(root);
 
             bool didSplit = true;
@@ -206,17 +189,17 @@ namespace RogueFramework
                     }
                 }
             }
-            root.CreateRooms();
-            ////root.ConnectRooms(root.LeftChild.GetRoom().Value, root.RightChild.GetRoom().Value);
+            root.CreateRooms();            
         }
 
         private void CutoutForBSP()
         {
             foreach (Cell cell in mapCells)
             {
-                if (cell.GetRoom().HasValue)
+                var room = cell.GetRoom();
+                if (room != null)
                 {
-                    LevelWalls.RemoveAll(w => w.XPos >= cell.GetRoom().Value.Left && w.XPos <= cell.GetRoom().Value.Right && w.YPos >= cell.GetRoom().Value.Top && w.YPos <= cell.GetRoom().Value.Bottom);
+                    LevelWalls.RemoveAll(w => w.XPos >= room.Value.Left && w.XPos <= room.Value.Right && w.YPos >= room.Value.Top && w.YPos <= room.Value.Bottom);
                 }
                 foreach (Rectangle hall in cell.halls)
                 {
@@ -224,9 +207,6 @@ namespace RogueFramework
                 }
             }
         }
-        
-
-
 
         public void DrawCreature(Base.ICreature creature)
         {            
