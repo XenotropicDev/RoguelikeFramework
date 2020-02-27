@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 
 namespace RogueFramework
@@ -12,6 +14,28 @@ namespace RogueFramework
         public List<Base.ITile> LevelTiles; 
         public List<Base.IWall> LevelWalls; 
         public List<Rooms.RoomLocation> rooms;
+
+        private List<Type> _creatureClassTypes;
+        public List<Type> CreatureClassTypes
+        { 
+            get
+            {
+                if (_creatureClassTypes == null)
+                {
+                    //Build list from reflection of ICreatureClass
+                    _creatureClassTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                                .Where(x => typeof(Base.ICreatureClass).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                                .ToList();
+                    
+                }
+                return _creatureClassTypes;
+            }
+            set
+            {
+                _creatureClassTypes = value;
+            }
+        }
+
         public Base.ICreature PC;
 
         public Random rand = new Random();
@@ -77,6 +101,7 @@ namespace RogueFramework
             CreateBSPRooms();
             //root.CreateHalls();
             CutoutForBSP();
+            SpawnCreatures();
             DrawLevel();
             DrawCreature(PC);
             Console.CursorVisible = false;
@@ -89,6 +114,49 @@ namespace RogueFramework
             //DrawLevel();
             //DrawCreature(PC);
             //Console.CursorVisible = false;
+        }
+
+        private void SpawnCreatures()
+        {
+            foreach (var cell in mapCells)
+            {
+                if (cell.IsLeaf() && rand.NextDouble() > 0.9)
+                {                    
+                    //var creatureType = creatures.First();
+                    //var creature = Activator.CreateInstance(creatureType);
+                    //ConstructorInfo ctor = creatureType.GetConstructor(new[] { typeof(Base.ICreatureClass) });
+                    //object instance = ctor.Invoke(new object[] { null });
+                }
+            }
+        }
+
+        /* I really need to think the creature creation function out:
+         *  Should it start with a creature and pick a class from the creature list?
+         *      This helps allow the creation of several creatures of the exact same type
+         *  Should it start with the creatureClass?
+         *      This is good for colonies of lepers
+         *  Should it start with a Race?
+         *      This is good for making a goblin army of different types
+         *  Should it be able to do all of these things and randomly pick what it's doing?
+         *      Probably best solution, but also the most code and complex         
+        */
+
+
+        private Base.ICreature GetRandomCreature()
+        {
+            List<Base.ICreatureClass> cand = new List<Base.ICreatureClass>();
+            foreach (var cType in CreatureClassTypes)
+            {
+                Base.ICreatureClass thing = Activator.CreateInstance(cType) as Base.ICreatureClass;
+                if (thing.HitDie > 4)
+                {
+                    cand.Add(thing);
+                }
+            }
+            if (cand.Count == 0) return null;
+            var selected = cand[rand.Next(cand.Count)];
+            //TODO finish this STUB
+            return null;
         }
 
         public void PopulateTiles()

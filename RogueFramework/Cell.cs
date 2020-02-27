@@ -170,6 +170,15 @@ namespace RogueFramework
             }
         }
 
+        public bool IsLeaf()
+        {
+            if (this.LeftChild == null && this.RightChild == null)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void ConnectRooms(Rectangle l, Rectangle r)
 
         {

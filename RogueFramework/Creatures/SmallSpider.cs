@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using RogueFramework.Base;
 
-/*
- * Maybe make the public stats BaseStats and have private Modifier stats for class and race?
- * 
-*/
 namespace RogueFramework.Creatures
 {
-    class SampleCharacter : Base.ICreature
+    class SmallSpider : Base.ICreature
     {
-        public string Name { get; set; }                     
+        public string Name { get; set; }             
+        public ICreatureClass CreatureClass { get; set; }
+        public ICreatureType CreatureType { get; set; }
+        public List<IItem> Inventory { get; set; }        
 
         public char Icon { get; set; }
         public ConsoleColor Color { get; set; }
@@ -31,26 +30,11 @@ namespace RogueFramework.Creatures
         public double AttackSpeed { get; set; }
         public double HitDie { get; set; }
 
-        private ICreatureClass _creatureClass;
-        public ICreatureClass CreatureClass
+        public SmallSpider()
         {
-            get
-            {
-                return _creatureClass;
-            }
-            set
-            {
-                _creatureClass = value;
-            }
-        }
-        public ICreatureType CreatureType { get; set; }
-        public List<IItem> Inventory { get; set; }
-
-        public SampleCharacter()
-        {
-            Name = "Sample";
+            Name = "Small Spider";
             CreatureClass = new CreatureClasses.Leper();
-            CreatureType = new Races.Human();
+            CreatureType = new Races.Beast();
             Inventory = new List<IItem>();            
             Icon = '@';
             Color = CreatureClass.ClassColor;
