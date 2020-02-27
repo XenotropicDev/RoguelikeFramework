@@ -9,7 +9,8 @@ namespace RogueFramework
 
         static void Main(string[] args)
         {
-            game.Start();
+            Demo.FakeMain();
+            //game.Start();
         }
     }
 }
