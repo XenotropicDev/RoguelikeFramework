@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
-using System.Reflection;
-using System.Text;
 
 namespace RogueFramework
 {
     public class Game
     {
-        public List<Base.ICreature> LevelCreatures; 
-        public List<Base.ITile> LevelTiles; 
-        public List<Base.IWall> LevelWalls; 
+        public List<Base.ICreature> LevelCreatures;
+        public List<Base.ITile> LevelTiles;
+        public List<Base.IWall> LevelWalls;
         public List<Rooms.RoomLocation> rooms;
 
         private List<Type> _creatureClassTypes;
+
         public List<Type> CreatureClassTypes
-        { 
+        {
             get
             {
                 if (_creatureClassTypes == null)
@@ -26,7 +24,6 @@ namespace RogueFramework
                     _creatureClassTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
                                 .Where(x => typeof(Base.ICreatureClass).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
                                 .ToList();
-                    
                 }
                 return _creatureClassTypes;
             }
@@ -45,10 +42,9 @@ namespace RogueFramework
             PC = new Creatures.SampleCharacter();
             Initialize();
             DrawCreature(PC);
-            
 
             while (true)
-            {                
+            {
                 var key = Console.ReadKey(true).Key;
 
                 switch (key)
@@ -73,7 +69,7 @@ namespace RogueFramework
                         RoomTest();
                         PopulateTiles();
                         PopulateWalls();
-                        //CutOutRooms();                        
+                        //CutOutRooms();
                         CutoutForBSP();
                         DrawLevel();
                         DrawCreature(PC);
@@ -109,7 +105,7 @@ namespace RogueFramework
             //RoomTest();
             //PopulateTiles();
             //PopulateWalls();
-            ////CutOutRooms();                        
+            ////CutOutRooms();
             //CutoutForBSP();
             //DrawLevel();
             //DrawCreature(PC);
@@ -121,7 +117,7 @@ namespace RogueFramework
             foreach (var cell in mapCells)
             {
                 if (cell.IsLeaf() && rand.NextDouble() > 0.9)
-                {                    
+                {
                     //var creatureType = creatures.First();
                     //var creature = Activator.CreateInstance(creatureType);
                     //ConstructorInfo ctor = creatureType.GetConstructor(new[] { typeof(Base.ICreatureClass) });
@@ -138,9 +134,8 @@ namespace RogueFramework
          *  Should it start with a Race?
          *      This is good for making a goblin army of different types
          *  Should it be able to do all of these things and randomly pick what it's doing?
-         *      Probably best solution, but also the most code and complex         
+         *      Probably best solution, but also the most code and complex
         */
-
 
         private Base.ICreature GetRandomCreature()
         {
@@ -171,7 +166,7 @@ namespace RogueFramework
                     if (rand.Next(0, 100) < 10)
                     {
                         tile = new Tiles.Water(x, y);
-                    }                    
+                    }
                     LevelTiles.Add(tile);
                     DrawTile(tile);
                 }
@@ -187,7 +182,7 @@ namespace RogueFramework
                 for (int x = 0; x < Console.WindowWidth; x++)
                 {
                     Base.IWall wall = new Walls.DungeonWall(x, y);
-                    LevelWalls.Add(wall);                              
+                    LevelWalls.Add(wall);
                 }
             }
         }
@@ -207,7 +202,7 @@ namespace RogueFramework
 
                     if (rand.NextDouble() > 0.975d)
                     {
-                        for (int tempY = y -1; tempY <= y + roomSize + 1; tempY++)
+                        for (int tempY = y - 1; tempY <= y + roomSize + 1; tempY++)
                         {
                             for (int tempX = x - 1; tempX <= x + roomSize + 1; tempX++)
                             {
@@ -217,7 +212,7 @@ namespace RogueFramework
 
                         LevelWalls.RemoveAll(w => w.XPos >= x && w.XPos <= x + roomSize && w.YPos >= y && w.YPos <= y + roomSize);
                         rooms.Add(new Rooms.RoomLocation(x, y));
-                    }                    
+                    }
                 }
             }
         }
@@ -228,7 +223,7 @@ namespace RogueFramework
         public void CreateBSPRooms()
         {
             const int MAX_CELL_SIZE = 16;
-             
+
             mapCells = new List<Cell>();
             root = new Cell(2, 2, Console.WindowWidth - 2, Console.WindowHeight - 2, rand);
             mapCells.Add(root);
@@ -239,7 +234,7 @@ namespace RogueFramework
             {
                 didSplit = false;
                 for (int i = 0; i < mapCells.Count; i++)
-                    ////for (int i = cells.Count - 1; i >= 0; i--)                
+                ////for (int i = cells.Count - 1; i >= 0; i--)
                 {
                     if (mapCells[i].LeftChild == null && mapCells[i].RightChild == null) // if this cell is not already split...
                     {
@@ -257,7 +252,7 @@ namespace RogueFramework
                     }
                 }
             }
-            root.CreateRooms();            
+            root.CreateRooms();
         }
 
         private void CutoutForBSP()
@@ -277,7 +272,7 @@ namespace RogueFramework
         }
 
         public void DrawCreature(Base.ICreature creature)
-        {            
+        {
             Console.SetCursorPosition(creature.XPos, creature.YPos);
             Console.ForegroundColor = creature.Color;
             Console.Write(creature.Icon);
@@ -313,7 +308,7 @@ namespace RogueFramework
                 creature.XPos += dx;
                 creature.YPos += dy;
                 DrawCreature(creature);
-            }            
+            }
         }
 
         public bool IsValidMove(Base.ICreature creature, int dx, int dy)
@@ -365,4 +360,3 @@ namespace RogueFramework
         }
     }
 }
-

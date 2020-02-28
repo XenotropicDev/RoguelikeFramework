@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RogueFramework", "RogueFramework\RogueFramework.csproj", "{C65AD339-CC16-4242-9CB6-38C42FEBA133}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RogueFramework", "RogueFramework\RogueFramework.csproj", "{C65AD339-CC16-4242-9CB6-38C42FEBA133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RogueFrameworkTests", "RogueFrameworkTests\RogueFrameworkTests.csproj", "{AA4312EB-C0C3-406F-9945-CC0AB3878974}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C65AD339-CC16-4242-9CB6-38C42FEBA133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C65AD339-CC16-4242-9CB6-38C42FEBA133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C65AD339-CC16-4242-9CB6-38C42FEBA133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA4312EB-C0C3-406F-9945-CC0AB3878974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA4312EB-C0C3-406F-9945-CC0AB3878974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA4312EB-C0C3-406F-9945-CC0AB3878974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA4312EB-C0C3-406F-9945-CC0AB3878974}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

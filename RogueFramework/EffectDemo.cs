@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace RogueFramework
 {
-    public class Demo
+    public class EffectDemo
     {
-        public static void FakeMain()
+        public static void Demo()
         {
             Item item = new Item { Name = "Sword", Durability = 100 };
             Console.WriteLine($"Item: {item.Name} [{item.Durability}]");

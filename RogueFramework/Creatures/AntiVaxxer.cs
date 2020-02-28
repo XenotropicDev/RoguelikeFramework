@@ -5,16 +5,16 @@ using RogueFramework.Base;
 
 namespace RogueFramework.CreatureClasses
 {
-    class AntiVaxer : Base.ICreatureClass
+    class AntiVaxxer : Base.ICreatureClass
     {
         public string Name { get; set; }
         public int HitDie { get; set; }
         public List<IEffect> ClassEffects { get; set; }
         public ConsoleColor ClassColor { get; set; }
 
-        public AntiVaxer()
+        public AntiVaxxer()
         {
-            Name = "Anti Vaxer";
+            Name = "Anti Vaxxer";
             HitDie = 4;
             ClassEffects = new List<IEffect>();
             ClassColor = ConsoleColor.Yellow;
