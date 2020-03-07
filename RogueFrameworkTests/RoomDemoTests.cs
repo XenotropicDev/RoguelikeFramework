@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RogueFramework;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace RogueFramework.Tests
 {
@@ -12,11 +10,21 @@ namespace RogueFramework.Tests
         [TestMethod()]
         public void DemoTest()
         {
-            for (int i = 0; i<100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 //System.Threading.Thread.Sleep(2);
-                Console.WriteLine(RoomFactory.GetRoom().Name);
+                var room = RoomFactory.GetRoom();
+                room.CreateRoom();
             }
+        }
+
+        [TestMethod()]
+        public void DecoratedRoomTest()
+        {
+            IRoom room = new CastleRoom();
+            room = new OrnateRoom(room);
+            room = new FloodedRoom(room);
+            room.CreateRoom();
         }
     }
 }

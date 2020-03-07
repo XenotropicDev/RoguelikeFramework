@@ -1,4 +1,7 @@
-﻿using System;
+﻿using RogueFramework.Base;
+using RogueFramework.Items;
+using System;
+using System.Collections.Generic;
 
 namespace RogueFramework
 {
@@ -20,25 +23,9 @@ namespace RogueFramework
     public interface IRoom
     {
         string Name { get; set; }
+        int Wealth { get; set; }
 
         void CreateRoom();
-    }
-
-    /// <summary>
-    /// Always use the same random for creating rooms.
-    /// </summary>
-    public static class RoomRandom
-    {
-        private static Random _rand;
-
-        public static Random Get()
-        {
-            if (_rand == null)
-            {
-                _rand = new Random();
-            }
-            return _rand;
-        }
     }
 
     public static class RoomFactory
@@ -48,19 +35,24 @@ namespace RogueFramework
             IRoom room;
             int transforms = 0;
 
-            //Make sure if we create a bunch of rooms we are getting different random seeds
-            var rand = RoomRandom.Get();
-
             //Setup the base room type
-            if (rand.Next(10) > 5) room = new CastleRoom();
+            if (GameRandom.Random.NextDouble() > 0.5) room = new CastleRoom();
             else room = new DungeonRoom();
 
             //Apply random room statuses to the base room
-            if (rand.Next(1000) >= 999) { room = new OrnateRoom(room); transforms++; }
-            if (rand.Next(100) >= 75) { room = new FloodedRoom(room); transforms++; }
-            if (rand.Next(100) >= 75 && transforms < 3) { room = new DirtyRoom(room); transforms++; }
-            if (rand.Next(100) >= 75 && transforms < 3) { room = new OvergrownRoom(room); transforms++; }
+            if (GameRandom.Random.NextDouble() >= 0.95) { room = new OrnateRoom(room); transforms++; }
+            if (GameRandom.Random.NextDouble() >= 0.95) { room = new HiddenTreasureRoom(room); transforms++; }
+            if (GameRandom.Random.NextDouble() >= 0.75) { room = new FloodedRoom(room); transforms++; }
+            if (GameRandom.Random.NextDouble() >= 0.75 && transforms < 3) { room = new DirtyRoom(room); transforms++; }
+            if (GameRandom.Random.NextDouble() >= 0.75 && transforms < 3) { room = new OvergrownRoom(room); transforms++; }
+            if (GameRandom.Random.NextDouble() >= 0.90 && transforms < 3) { room = new ArmoryRoom(room); transforms++; }
             return room;
+        }
+
+        private static IRoom RandomRoom(int MaxWealth = int.MaxValue)
+        {
+            //if (GameRandom.Random.NextDouble() > 0.7)
+            return new CastleRoom();
         }
     }
 
@@ -72,10 +64,11 @@ namespace RogueFramework
         }
 
         public string Name { get; set; }
+        public int Wealth { get; set; } = 100;
 
         public void CreateRoom()
         {
-            Console.WriteLine(this.Name);
+
         }
     }
 
@@ -87,10 +80,11 @@ namespace RogueFramework
         }
 
         public string Name { get; set; }
+        public int Wealth { get; set; } = 100;
 
         public void CreateRoom()
         {
-            Console.WriteLine(this.Name);
+
         }
     }
 
@@ -104,6 +98,7 @@ namespace RogueFramework
         }
 
         public string Name { get; set; }
+        public int Wealth { get; set; }
 
         public virtual void CreateRoom()
         {
@@ -116,6 +111,12 @@ namespace RogueFramework
         public FloodedRoom(IRoom room) : base(room)
         {
             this.Name = "Flooded " + room.Name;
+            this.Wealth -= 50;
+        }
+
+        public override void CreateRoom()
+        {
+            base.CreateRoom();
         }
     }
 
@@ -124,6 +125,27 @@ namespace RogueFramework
         public OrnateRoom(IRoom room) : base(room)
         {
             this.Name = "Ornate " + room.Name;
+            this.Wealth += 500;
+        }
+
+        public override void CreateRoom()
+        {
+            base.CreateRoom();
+        }
+    }
+
+    public class HiddenTreasureRoom : RoomDecorator
+    {
+        public HiddenTreasureRoom(IRoom room) : base(room)
+        {
+            this.Name = "Treasure " + room.Name;
+            this.Wealth += 500;
+        }
+
+        public override void CreateRoom()
+        {
+            Console.WriteLine("Something is hidden in here.");
+            base.CreateRoom();
         }
     }
 
@@ -132,6 +154,7 @@ namespace RogueFramework
         public OvergrownRoom(IRoom room) : base(room)
         {
             this.Name = "Overgrown " + room.Name;
+            this.Wealth -= 25;
         }
     }
 
@@ -140,6 +163,16 @@ namespace RogueFramework
         public DirtyRoom(IRoom room) : base(room)
         {
             this.Name = "Dirty " + room.Name;
+            this.Wealth -= 50;
+        }
+    }
+
+    public class ArmoryRoom : RoomDecorator
+    {
+        public ArmoryRoom(IRoom room) : base(room)
+        {
+            this.Name = "Armory " + room.Name;
+            this.Wealth += 50;
         }
     }
 }

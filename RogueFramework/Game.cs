@@ -5,6 +5,14 @@ using System.Linq;
 
 namespace RogueFramework
 {
+    /// <summary>
+    /// Always use the same random seed for creating things.
+    /// </summary>
+    public static class GameRandom
+    {
+        public static Random Random;
+    }
+
     public class Game
     {
         public List<Base.ICreature> LevelCreatures;

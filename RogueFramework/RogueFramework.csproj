@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Items\" />
+    <None Remove="Items\NewFile1.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="ItemTypes\" />
   </ItemGroup>
 
